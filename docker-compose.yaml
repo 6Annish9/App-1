@@ -1,0 +1,28 @@
+version: "3.7"
+
+volumes:
+  duco-data:
+
+services:
+  db:
+    image: postgres
+    ports:
+      - 7132:5432
+    volumes:
+      - duco-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=duco
+
+  duco:
+    build:
+      context: .
+    ports:
+      - 7100:7101
+      - 7101:7101
+      - 7102:7102
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres@host.docker.internal:7132/duco
